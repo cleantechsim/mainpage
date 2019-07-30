@@ -2,6 +2,7 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="css/navigation.css" />
+    <link rel="stylesheet" type="text/css" href="css/downloaded/spin.css" />
 </head>
 
 <body>
@@ -34,13 +35,28 @@
             var iFrames = document.getElementsByClassName("navigation-page");
             var navigationMain = document.getElementById("main-div");
 
-            var eventHandling = new exports.NavigationEventHandling(divs, model.pages, iFrames, navigationMain, null, null);
+            var createSpinner = function (element) {
+                var spinner = new Spinner({
+                    lines: 12,
+                    scale: 4,
+                    zIndex: 10000
+                });
+
+                return spinner.spin(element);
+            }
+
+            var stopSpinner = function (spinner) {
+                spinner.stop();
+            }
+
+            var eventHandling = new exports.NavigationEventHandling(divs, model.pages, iFrames, navigationMain, createSpinner, stopSpinner);
 
             eventHandling.start();
         })
     </script>
 
     <script type="application/javascript" src="js/navigation.js"></script>
+    <script type="application/javascript" src="js/downloaded/spin.umd.js"></script>
 </body>
 
 </html>
