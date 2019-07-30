@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="css/navigation.css" />
+</head>
+
+<body>
+
+    <div id="mainpage-outer">
+
+        <div id="navigation-bar">
+
+            <div id="navigation-titles">
+                {{#each pages}}
+                <div class="navigation-page-title">{{ title }}</div>
+                {{/ each}}
+            </div>
+
+        </div>
+
+        <div id="main-div">
+            <iframe class="navigation-page" style="z-index: 0;">1234</iframe>
+            <iframe class="navigation-page" style="z-index: 1;">1234</iframe>
+        </div>
+    </div>
+
+    <script>
+        var exports = {};
+        var model = JSON.parse('{{{encodedModel}}}');
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            var divs = document.getElementsByClassName("navigation-page-title");
+            var iFrames = document.getElementsByClassName("navigation-page");
+            var navigationMain = document.getElementById("main-div");
+
+            var eventHandling = new exports.NavigationEventHandling(divs, model.pages, iFrames, navigationMain, null, null);
+
+            eventHandling.start();
+        })
+    </script>
+
+    <script type="application/javascript" src="js/navigation.js"></script>
+</body>
+
+</html>
