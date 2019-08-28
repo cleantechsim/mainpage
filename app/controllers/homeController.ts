@@ -4,11 +4,13 @@ import { Page, NavigationModel } from "../public/js/navigation.js"
 
 exports.index = function (req: Request, res: Response) {
 
+    var host = "www.cleantechsim.org";
+
     var model: NavigationModel = {
         pages: [
-            new Page("EV market", "http://localhost:5001"),
-            new Page("EV chargers", "http://localhost:3000/under_construction"),
-            new Page("Energy", "http://localhost:3000/under_construction")
+	    new Page("EV market", "http://" + host + "/evmarket"),
+	    new Page("EV charger stats", "http://" + host + "/evcharger_stats"),
+            new Page("Energy", "http://" + host + "/under_construction")
         ],
 
         encodedModel: ''
