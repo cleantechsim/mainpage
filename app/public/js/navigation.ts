@@ -62,8 +62,13 @@ export class NavigationEventHandling {
         }
 
         this.activeDiv = pageElements[0];
+
         this.displayedIFrame = 0;
+        this.iFrames[0].style.opacity = "1.0";
+        this.iFrames[1].style.opacity = "0";
+
         this.isLoading = false;
+
     }
 
     public start(): void {
@@ -87,7 +92,6 @@ export class NavigationEventHandling {
         }
     }
 
-
     private loadPage(divElement: HTMLDivElement, pageConfig: Page): void {
 
         if (this.isLoading) {
@@ -105,29 +109,53 @@ export class NavigationEventHandling {
         }
 
         var t = this;
-        var eventListener = () => {
+        var loadEventListener = () => {
 
-            // Swap iframes by adjusting opacity
-            // CSS can define a transition for this
-            t.iFrames[iFrameToLoad].style.opacity = "1.0";
-            t.iFrames[iFrameToHide].style.opacity = "0";
+            try {
+                // swap z-index on transition end so that input hits
+                // the now opaque iframe
+                var transitionEndListener = () => {
 
-            t.displayedIFrame = iFrameToLoad;
-            t.isLoading = false;
-            t.activeDiv = divElement;
+                    try {
+                        // Must swap z-index
+                        t.iFrames[iFrameToLoad].style.zIndex = "1";
+                        t.iFrames[iFrameToHide].style.zIndex = "0";
 
-            if (spinner) {
-                t.stopSpinner(spinner);
+                        // Loading done, update
+                        this.setNotLoadingAnymoreAndUpdateDisplayed(iFrameToLoad, divElement);
+                    }
+                    finally {
+                        t.iFrames[iFrameToLoad].removeEventListener('transitionend', transitionEndListener);
+                    }
+                };
+
+                t.iFrames[iFrameToLoad].addEventListener('transitionend', transitionEndListener)
+
+                // Swap iframes by adjusting opacity
+                // CSS can define a transition for this
+                t.iFrames[iFrameToLoad].style.opacity = "1.0";
+                t.iFrames[iFrameToHide].style.opacity = "0";
+
+                if (spinner) {
+                    t.stopSpinner(spinner);
+                }
             }
-
-            t.iFrames[iFrameToLoad].removeEventListener('load', eventListener);
+            finally {
+                t.iFrames[iFrameToLoad].removeEventListener('load', loadEventListener);
+            }
         }
 
-        t.iFrames[iFrameToLoad].addEventListener('load', eventListener);
+        t.iFrames[iFrameToLoad].addEventListener('load', loadEventListener);
 
         console.log('## Page config for ' + JSON.stringify(pageConfig));
 
         this.isLoading = true;
         t.iFrames[iFrameToLoad].src = pageConfig.pageUrl;
+    }
+
+    private setNotLoadingAnymoreAndUpdateDisplayed(iFrameToLoad: number, divElement: HTMLDivElement): void {
+        this.displayedIFrame = iFrameToLoad;
+        this.isLoading = false;
+        this.activeDiv = divElement;
     }
 }
