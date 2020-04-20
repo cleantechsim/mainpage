@@ -8,10 +8,10 @@ exports.index = function (req: Request, res: Response) {
 
     var model: NavigationModel = {
         pages: [
-	    new Page("EV market", "http://" + host + "/evmarket"),
+        new Page("EV charger map", "http://" + host + "/evcharger_map"),
 	    new Page("EV charger stats", "http://" + host + "/evcharger_stats"),
-	    new Page("EV charger map", "http://" + host + "/evcharger_map"),
-            new Page("Energy", "http://" + host + "/under_construction")
+        new Page("EV market", "http://" + host + "/evmarket"),
+        new Page("Energy", "http://" + host + "/under_construction")
         ],
 
         encodedModel: ''
